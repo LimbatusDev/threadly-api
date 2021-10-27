@@ -51,6 +51,7 @@ class TwitterAuth(graphene.Mutation):
             'oauth_token_secret': oauth_verifier
         }
         try:
+            # TODO: Check if this returns me the twitter user
             auth.get_access_token(oauth_verifier)
             api = tweepy.API(auth)
 
