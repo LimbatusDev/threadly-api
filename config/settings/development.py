@@ -22,4 +22,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-
+# twitter secrets
+TWITTER_API_KEY = get_env_variable('TWITTER_API_KEY')
+TWITTER_API_KEY_SECRET = get_env_variable('TWITTER_API_KEY_SECRET')
