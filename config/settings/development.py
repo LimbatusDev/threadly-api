@@ -3,7 +3,11 @@ This is the settings file that you use when you're working on the project locall
 Local development-specific include DEBUG mode, log level, and activation of developer tools like django-debug-toolsbar
 """
 
+from dotenv import load_dotenv
 from .base import *
+
+# We load the env vars from a .env file
+load_dotenv()
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -17,3 +21,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
