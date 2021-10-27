@@ -1,7 +1,10 @@
 import graphene
 import tweepy
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from graphql import GraphQLError
+from graphql_jwt.signals import token_issued
+from graphql_jwt.utils import jwt_payload, jwt_encode
 
 from apps.accounts.api.types import UserType
 
@@ -29,20 +32,51 @@ class TwitterLoginUrl(graphene.Mutation):
             return GraphQLError('Error fetching Twitter authorization url')
 
 
-class TokenAuth(graphene.Mutation):
+class TwitterAuth(graphene.Mutation):
     """
     Login user
     """
-    ok = graphene.Boolean()
+    status = graphene.Boolean()
     token = graphene.String()
     user = graphene.Field(UserType)
 
     class Arguments:
-        username = graphene.String(required=True)
-        password = graphene.String(required=True)
+        oauth_verifier = graphene.String(required=True)
+        request_token = graphene.String(required=True)
 
-    def mutate(self, info, username, password):
-        pass
+    def mutate(self, info, oauth_verifier, request_token):
+        auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_KEY_SECRET)
+        auth.request_token = {
+            'oauth_token': request_token,
+            'oauth_token_secret': oauth_verifier
+        }
+        try:
+            auth.get_access_token(oauth_verifier)
+            api = tweepy.API(auth)
+
+            twitter_user = api.verify_credentials()
+            user, created = get_user_model().objects.get_or_create(
+                username=twitter_user.screen_name,
+                defaults={
+                    'first_name': twitter_user.name,
+                    'banner_url': twitter_user.profile_banner_url,
+                    'image_url': twitter_user.profile_image_url,
+                    'twitter_token': auth.access_token,
+                    'twitter_token_secret': auth.access_token_secret,
+                }
+            )
+            payload = jwt_payload(user)
+            token = jwt_encode(payload)
+
+            token_issued.send(
+                sender='TokenAuth',
+                request=info.context,
+                user=user
+            )
+            return TwitterAuth(status=True, token=token, user=user)
+        except tweepy.TweepyException as e:
+            print(e)
+            return GraphQLError('Error! Failed to get access token.')
 
 
 class UserMutations(graphene.ObjectType):
@@ -50,4 +84,4 @@ class UserMutations(graphene.ObjectType):
     twitter_login = TwitterLoginUrl.Field()
 
     # authenticate the User with its username or email and password to obtain the JSON Web token.
-    token_auth = TokenAuth.Field()
+    token_auth = TwitterAuth.Field()

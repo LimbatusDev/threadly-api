@@ -8,6 +8,8 @@ class User(AbstractUser):
     """
     twitter_token = models.CharField(max_length=100)
     twitter_token_secret = models.CharField(max_length=100)
+    banner_url = models.URLField()
+    image_url = models.URLField()
 
     class Meta:
         ordering = ['username']
