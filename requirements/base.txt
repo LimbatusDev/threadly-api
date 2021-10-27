@@ -1,5 +1,9 @@
 Django==3.2.8
 psycopg2==2.8.4
 Pillow==7.0.0
-six==1.14.0
-virtualenv==20.0.10
+graphene-django==2.15.0
+celery==5.1.2
+redis==3.5.3
+django-graphql-jwt==0.3.4
+django-cors-headers==3.7.0
+pre-commit==2.15.0
