@@ -89,9 +89,32 @@ class TwitterAuth(graphene.Mutation):
             return GraphQLError('Error! Failed to get access token.')
 
 
+class TwitterThread(graphene.Mutation):
+    status = graphene.Boolean()
+    tweet_url = graphene.String()
+
+    class Arguments:
+        threads = graphene.List(graphene.String)
+
+    @staticmethod
+    def mutate(root, info, threads):
+        # check length of every tweet
+        filtered = list(filter(lambda tweet: len(tweet) <= 280, threads))
+        if len(threads) != len(filtered):
+            # if length is incorrect return false
+            return TwitterThread(status=False, tweet_url=None)
+        url = ''
+        # send the tweets
+        # get the first tweet's url
+        return TwitterThread(status=True, tweet_url=url)
+
+
 class UserMutations(graphene.ObjectType):
     # authenticate with twitter
     twitter_login = TwitterLoginUrl.Field()
 
     # authenticate the User with its username or email and password to obtain the JSON Web token.
     token_auth = TwitterAuth.Field()
+
+    # post twitter thread
+    tweetPost = TwitterThread.Field()

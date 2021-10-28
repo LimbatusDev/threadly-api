@@ -1,6 +1,6 @@
 from graphene_django import DjangoObjectType
 
-from .. import models
+from apps.accounts import models
 
 
 class UserType(DjangoObjectType):
