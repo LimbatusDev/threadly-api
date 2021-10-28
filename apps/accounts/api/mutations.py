@@ -56,12 +56,21 @@ class TwitterAuth(graphene.Mutation):
             api = tweepy.API(auth)
 
             twitter_user = api.verify_credentials()
+            try:
+                profile_banner_url = twitter_user.profile_banner_url
+            except:
+                profile_banner_url = ''
+            try:
+                profile_image_url = twitter_user.profile_image_url
+            except:
+                profile_image_url = ''
+
             user, created = get_user_model().objects.get_or_create(
                 username=twitter_user.screen_name,
                 defaults={
                     'first_name': twitter_user.name,
-                    'banner_url': twitter_user.profile_banner_url,
-                    'image_url': twitter_user.profile_image_url,
+                    'banner_url': profile_banner_url,
+                    'image_url': profile_image_url,
                     'twitter_token': auth.access_token,
                     'twitter_token_secret': auth.access_token_secret,
                 }
