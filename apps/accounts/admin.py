@@ -10,12 +10,12 @@ class UserAdmin(UserAdmin):
     list_display = ['username', 'get_full_name', 'is_superuser']
     list_filter = ['is_superuser']
     search_fields = ['username', 'first_name', 'last_name']
-    # fieldsets = UserAdmin.fieldsets + (
-    #     ('Otros datos', {'fields': ('')}),
-    # )
-    # add_fieldsets = UserAdmin.add_fieldsets + (
-    #     ('Otros datos', {'fields': ('')}),
-    # )
+    fieldsets = UserAdmin.fieldsets + (
+        ('Otros datos', {'fields': ('banner_url', 'image_url')}),
+    )
+    add_fieldsets = UserAdmin.add_fieldsets + (
+        ('Otros datos', {'fields': ('banner_url', 'image_url')}),
+    )
 
 
 # Remove Group from Django admin
