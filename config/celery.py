@@ -8,7 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings.development')
 # Get the base REDIS URL, default to redis' default
 BASE_REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
 
-app = Celery('threadly')
+app = Celery('threadly-api')
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.

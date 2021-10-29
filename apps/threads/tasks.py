@@ -2,5 +2,5 @@ from celery import shared_task
 
 
 @shared_task
-def test(a, b):
+def my_task(a, b):
     return a + b
