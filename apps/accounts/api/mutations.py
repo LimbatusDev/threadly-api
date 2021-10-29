@@ -101,7 +101,7 @@ class TwitterThread(graphene.Mutation):
     @login_required
     def mutate(root, info, threads):
         # check length of every tweet
-        filtered = list(filter(lambda tweet: len(tweet) <= 280, threads))
+        filtered = list(filter(lambda t: len(t) <= 280, threads))
         if len(threads) != len(filtered):
             # if length is incorrect return false
             return TwitterThread(status=False, tweet_url=None)
