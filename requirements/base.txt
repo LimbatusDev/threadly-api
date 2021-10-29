@@ -1,9 +1,9 @@
 Django==3.2.8
 psycopg2==2.8.4
 Pillow==7.0.0
-graphene-django==2.15.0
 celery==5.1.2
 redis==3.5.3
+graphene-django==2.15.0
 django-graphql-jwt==0.3.4
 django-cors-headers==3.7.0
 tweepy==4.1.0
