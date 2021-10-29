@@ -8,6 +8,7 @@ from graphql_jwt.signals import token_issued
 from graphql_jwt.utils import jwt_payload, jwt_encode
 
 from apps.accounts.api.types import UserType
+from apps.threads.utils import send_thread
 
 
 class TwitterLoginUrl(graphene.Mutation):
@@ -95,33 +96,13 @@ class TwitterThread(graphene.Mutation):
     tweet_url = graphene.String()
 
     class Arguments:
-        threads = graphene.List(graphene.String)
+        thread = graphene.List(graphene.String)
 
     @staticmethod
     @login_required
-    def mutate(root, info, threads):
-        # check length of every tweet
-        filtered = list(filter(lambda t: len(t) <= 280, threads))
-        if len(threads) != len(filtered):
-            # if length is incorrect return false
-            return TwitterThread(status=False, tweet_url=None)
-        user = info.context.user  # current user
-        auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_KEY_SECRET)
-        auth.set_access_token(user.twitter_token, user.twitter_token_secret)
-        api = tweepy.API(auth)
-
-        # send the tweets
-        reply_status = None
-        url = None
-        for tweet in threads:
-            status = api.update_status(status=tweet, in_reply_to_status_id=reply_status)
-            print(status)
-            reply_status = status.id
-            if not url:
-                url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}"
-
-        # get the first tweet's url
-        return TwitterThread(status=True, tweet_url=url)
+    def mutate(root, info, thread):
+        url = send_thread(info.context.user, thread)
+        return TwitterThread(status=url is not None, tweet_url=url)
 
 
 class UserMutations(graphene.ObjectType):
