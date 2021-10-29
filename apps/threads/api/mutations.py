@@ -1,19 +1,23 @@
 import graphene
+from graphql_jwt.decorators import login_required
 
-from apps.threads.tasks import my_task
+from apps.threads.utils import send_thread
 
 
-class TestMutate(graphene.Mutation):
+class TwitterThread(graphene.Mutation):
     status = graphene.Boolean()
+    tweet_url = graphene.String()
 
     class Arguments:
-        pass
+        thread = graphene.List(graphene.String)
 
     @staticmethod
-    def mutate(root, info):
-        my_task.delay(1, 2)
-        return TestMutate(status=True)
+    @login_required
+    def mutate(root, info, thread):
+        url = send_thread(info.context.user, thread)
+        return TwitterThread(status=url is not None, tweet_url=url)
 
 
 class ThreadMutations(graphene.ObjectType):
-    testing = TestMutate.Field()
+    # post twitter thread
+    tweet_post = TwitterThread.Field()

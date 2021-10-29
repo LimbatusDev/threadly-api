@@ -3,12 +3,10 @@ import tweepy
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from graphql import GraphQLError
-from graphql_jwt.decorators import login_required
 from graphql_jwt.signals import token_issued
 from graphql_jwt.utils import jwt_payload, jwt_encode
 
 from apps.accounts.api.types import UserType
-from apps.threads.utils import send_thread
 
 
 class TwitterLoginUrl(graphene.Mutation):
@@ -91,26 +89,9 @@ class TwitterAuth(graphene.Mutation):
             return GraphQLError('Error! Failed to get access token.')
 
 
-class TwitterThread(graphene.Mutation):
-    status = graphene.Boolean()
-    tweet_url = graphene.String()
-
-    class Arguments:
-        thread = graphene.List(graphene.String)
-
-    @staticmethod
-    @login_required
-    def mutate(root, info, thread):
-        url = send_thread(info.context.user, thread)
-        return TwitterThread(status=url is not None, tweet_url=url)
-
-
 class UserMutations(graphene.ObjectType):
     # authenticate with twitter
     twitter_login = TwitterLoginUrl.Field()
 
     # authenticate the User with its username or email and password to obtain the JSON Web token.
     token_auth = TwitterAuth.Field()
-
-    # post twitter thread
-    tweetPost = TwitterThread.Field()
