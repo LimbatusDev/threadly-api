@@ -3,6 +3,7 @@ import tweepy
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from graphql import GraphQLError
+from graphql_jwt.decorators import login_required
 from graphql_jwt.signals import token_issued
 from graphql_jwt.utils import jwt_payload, jwt_encode
 
@@ -97,14 +98,28 @@ class TwitterThread(graphene.Mutation):
         threads = graphene.List(graphene.String)
 
     @staticmethod
+    @login_required
     def mutate(root, info, threads):
         # check length of every tweet
         filtered = list(filter(lambda tweet: len(tweet) <= 280, threads))
         if len(threads) != len(filtered):
             # if length is incorrect return false
             return TwitterThread(status=False, tweet_url=None)
-        url = ''
+        user = info.context.user  # current user
+        auth = tweepy.OAuthHandler(settings.TWITTER_API_KEY, settings.TWITTER_API_KEY_SECRET)
+        auth.set_access_token(user.twitter_token, user.twitter_token_secret)
+        api = tweepy.API(auth)
+
         # send the tweets
+        reply_status = None
+        url = None
+        for tweet in threads:
+            status = api.update_status(status=tweet, in_reply_to_status_id=reply_status)
+            print(status)
+            reply_status = status.id
+            if not url:
+                url = f"https://twitter.com/{status.user.screen_name}/status/{status.id}"
+
         # get the first tweet's url
         return TwitterThread(status=True, tweet_url=url)
 
