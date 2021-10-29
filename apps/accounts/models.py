@@ -1,8 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+from apps.threads.models import AbstractTwitterUser
 
-class User(AbstractUser):
+
+class User(AbstractTwitterUser, AbstractUser):
     """
     User model
     """
