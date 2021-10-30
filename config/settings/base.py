@@ -43,6 +43,7 @@ LOCAL_APPS = [
     'apps.api.apps.ApiConfig',
     'apps.core.apps.CoreConfig',
     'apps.threads.apps.ThreadsConfig',
+    'apps.billing.apps.BillingConfig',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
