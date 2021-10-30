@@ -18,7 +18,7 @@ def my_task(a, b):
 @shared_task
 def send_async_thread(thread_id: int) -> str:
     try:
-        thread = Thread.objects.get(thread_id)
+        thread = Thread.objects.get(pk=thread_id)
         user = thread.author
         # process tweets
         tweets = json.loads(thread.tweets)

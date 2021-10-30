@@ -45,9 +45,7 @@ def schedule_thread(thread: Thread):
         clocked=schedule,
         name=str(uuid.uuid4()),
         task=TASKS.SEND_ASYNC_THREAD,
-        args=json.dumps({
-            'thread_id': thread.id,
-        }),
+        args=json.dumps([thread.id]),
         one_off=True,  # If True, the schedule will only run the task a single time
     )
     pass

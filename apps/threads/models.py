@@ -21,3 +21,6 @@ class Thread(TimeStampedModel):
     tweets = models.CharField('Tweets', max_length=2800)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     pub_date = models.DateTimeField()
+
+    def __str__(self):
+        return '{}'.format(self.pub_date)
