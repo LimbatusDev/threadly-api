@@ -3,3 +3,8 @@ BILLING_STATE = (
     ('confirmed', 'Confirmed'),
     ('cancelled', 'Cancelled')
 )
+
+
+class BillingTypes:
+    MONTHLY = 'monthly'
+    YEARLY = 'yearly'
