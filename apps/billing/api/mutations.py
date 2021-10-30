@@ -61,8 +61,14 @@ class ConfirmTransaction(graphene.Mutation):
 
         try:
             transaction = Transaction.objects.get(number=remote_id)
+            if transaction.state == 'confirmed':
+                print('Already paid')
+                return ConfirmTransaction(status=False)
+
             transaction.state = 'confirmed'
             transaction.save()
+            info.context.user.extend_premium(transaction.days)
+            return ConfirmTransaction(status=True)
         except Transaction.DoesNotExist:
             print('remote id incorrect')
             return ConfirmTransaction(status=False)

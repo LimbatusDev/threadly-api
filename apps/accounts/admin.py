@@ -7,11 +7,11 @@ from . import models
 
 @admin.register(models.User)
 class UserAdmin(UserAdmin):
-    list_display = ['username', 'get_full_name', 'is_superuser']
+    list_display = ['username', 'get_full_name', 'is_superuser', 'is_premium']
     list_filter = ['is_superuser']
     search_fields = ['username', 'first_name', 'last_name']
     fieldsets = UserAdmin.fieldsets + (
-        ('Otros datos', {'fields': ('banner_url', 'image_url')}),
+        ('Otros datos', {'fields': ('banner_url', 'image_url', 'due_premium_date')}),
     )
     add_fieldsets = UserAdmin.add_fieldsets + (
         ('Otros datos', {'fields': ('banner_url', 'image_url')}),
