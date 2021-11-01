@@ -18,6 +18,9 @@ class TwitterThread(graphene.Mutation):
     @login_required
     def mutate(root, info, thread: [str]):
         url = send_thread(info.context.user, thread)
+        if url:
+            user = info.context.user
+            user.send_tweets(len(thread))
         return TwitterThread(status=url is not None, tweet_url=url)
 
 
@@ -31,8 +34,6 @@ class ScheduleThread(graphene.Mutation):
     @staticmethod
     @login_required
     def mutate(root, info, tweets: [str], pub_date):
-        print(pub_date)
-        print(type(pub_date))
         thread = Thread.objects.create(
             tweets=json.dumps(tweets),
             author=info.context.user,
