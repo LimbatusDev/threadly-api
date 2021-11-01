@@ -24,7 +24,7 @@ class Transaction(TimeStampedModel):
     number = models.CharField(max_length=255)
     state = models.CharField(
         max_length=15,
-        default=constants.BILLING_STATE[0][0],
+        default=constants.BILLING.PENDING,
         choices=constants.BILLING_STATE
     )
 

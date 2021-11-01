@@ -1,7 +1,13 @@
+class BILLING:
+    PENDING = 'pending'
+    CONFIRMED = 'confirmed'
+    CANCELLED = 'cancelled'
+
+
 BILLING_STATE = (
-    ('pending', 'Pending'),
-    ('confirmed', 'Confirmed'),
-    ('cancelled', 'Cancelled')
+    (BILLING.PENDING, 'Pending'),
+    (BILLING.CONFIRMED, 'Confirmed'),
+    (BILLING.CANCELLED, 'Cancelled')
 )
 
 
