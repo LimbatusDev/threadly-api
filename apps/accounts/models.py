@@ -48,6 +48,15 @@ class User(AbstractTwitterUser, AbstractUser):
     def activate(self):
         self.is_active = True
 
+    def get_config(self):
+        try:
+            config = UserConfiguration.objects.get(user_id=self.id)
+        except UserConfiguration.DoesNotExist:
+            config = UserConfiguration.objects.create(
+                user=self,
+            )
+        return config
+
 
 class UserConfiguration(models.Model):
     tweet_sends = models.IntegerField(default=0)
