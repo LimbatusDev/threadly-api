@@ -1,3 +1,5 @@
+import django_heroku
+
 from .base import *
 
 ALLOWED_HOSTS = ["threadly.xyz"]
@@ -13,3 +15,6 @@ QVAPAY_APP_SECRET = get_env_variable('QVAPAY_APP_SECRET')
 
 # for secrets requests
 SECRET_TOKEN = get_env_variable('SECRET_TOKEN')
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
