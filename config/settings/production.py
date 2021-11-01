@@ -1,4 +1,9 @@
+from dotenv import load_dotenv
+
 from .base import *
+
+# We load the env vars from a .env file
+load_dotenv()
 
 ALLOWED_HOSTS = ["threadly.xyz"]
 DEBUG = False
