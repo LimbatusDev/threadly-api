@@ -8,6 +8,12 @@ from apps.accounts.constants import COUNTER_TWEET
 from apps.threads.models import AbstractTwitterUser
 
 
+class UserConfiguration(models.Model):
+    tweet_sends = models.IntegerField(default=0)
+    counter = models.CharField(max_length=10, choices=COUNTER_TWEET, default=COUNTER_TWEET[0][0])
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+
 class User(AbstractTwitterUser, AbstractUser):
     """
     User model
@@ -48,7 +54,7 @@ class User(AbstractTwitterUser, AbstractUser):
     def activate(self):
         self.is_active = True
 
-    def get_config(self):
+    def get_config(self) -> UserConfiguration:
         try:
             config = UserConfiguration.objects.get(user_id=self.id)
         except UserConfiguration.DoesNotExist:
@@ -57,8 +63,7 @@ class User(AbstractTwitterUser, AbstractUser):
             )
         return config
 
-
-class UserConfiguration(models.Model):
-    tweet_sends = models.IntegerField(default=0)
-    counter = models.CharField(max_length=10, choices=COUNTER_TWEET, default=COUNTER_TWEET[0][0])
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    def send_tweets(self, counter: int = 1):
+        config = self.get_config()
+        config.tweet_sends += counter
+        config.save()
