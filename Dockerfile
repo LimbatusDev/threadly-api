@@ -1,6 +1,30 @@
 FROM python:3.8
+
 ENV PYTHONUNBUFFERED=1
+
+# Env vars
+ENV DJANGO_SETTINGS_MODULE ${DJANGO_SETTINGS_MODULE}
+# QvaPay secrets
+ENV QVAPAY_APP_ID ${QVAPAY_APP_ID}
+ENV QVAPAY_APP_SECRET ${QVAPAY_APP_SECRET}
+# Config secrets
+ENV REDIS_URL ${REDIS_URL}
+ENV SECRET_KEY ${SECRET_KEY}
+ENV SECRET_TOKEN ${SECRET_TOKEN}
+# Twitter secrets
+ENV TWITTER_API_KEY ${TWITTER_API_KEY}
+ENV TWITTER_API_KEY_SECRET ${TWITTER_API_KEY_SECRET}
+# database secrets
+ENV DB_NAME ${DB_NAME}
+ENV DB_HOST ${DB_HOST}
+ENV DB_PORT ${DB_PORT}
+ENV DB_USER ${DB_USER}
+ENV DB_PASSWORD ${DB_PASSWORD}
+
 WORKDIR /code
+
+RUN pip install --upgrade pip
 COPY requirements/* /code/requirements/
 RUN pip install -r requirements/production.txt
 COPY . /code/
+RUN mkdir /code/logs
