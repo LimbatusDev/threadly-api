@@ -1,0 +1,10 @@
+[
+    {
+        "model": "billing.BillingConfig",
+        "pk": 1,
+        "fields": {
+            "price_monthly": 7,
+            "price_yearly": 70
+        }
+    }
+]
