@@ -114,8 +114,17 @@ class CancelTransaction(graphene.Mutation):
     def mutate(root, info, token, remote_id):
         if token != settings.SECRET_TOKEN:
             return GraphQLError('secret is incorrect!')
-
-        return CancelTransaction(status=True)
+        try:
+            transaction = Transaction.objects.get(number=remote_id)
+            if transaction.state == BILLING.PENDING:
+                transaction.state = BILLING.CANCELLED
+                transaction.save()
+                return CancelTransaction(status=True)
+            else:
+                logger.warning('Transaction ({}) already {}'.format(transaction.id, transaction.state))
+                return CancelTransaction(status=False)
+        except Transaction.DoesNotExist:
+            return CancelTransaction(status=False)
 
 
 class BillingMutations:
