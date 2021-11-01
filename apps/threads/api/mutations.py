@@ -31,6 +31,8 @@ class ScheduleThread(graphene.Mutation):
     @staticmethod
     @login_required
     def mutate(root, info, tweets: [str], pub_date):
+        print(pub_date)
+        print(type(pub_date))
         thread = Thread.objects.create(
             tweets=json.dumps(tweets),
             author=info.context.user,

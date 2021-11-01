@@ -47,17 +47,18 @@ class ConfirmTransaction(graphene.Mutation):
     status = graphene.Boolean()
 
     class Arguments:
-        secret = graphene.String()
+        token = graphene.String()
         remote_id = graphene.String()
+        transaction_uuid = graphene.String()
 
     @staticmethod
     @login_required
-    def mutate(root, info, secret, remote_id):
-        if secret != settings.SECRET_TOKEN:
+    def mutate(root, info, token, remote_id, transaction_uuid):
+        if token != settings.SECRET_TOKEN:
             return GraphQLError('secret is incorrect!')
 
-        # client = QvaPayClient(app_id=settings.QVAPAY_APP_ID, app_secret=settings.QVAPAY_APP_SECRET)
-        # invoice = client.get_transaction(transaction_id)
+        client = QvaPayClient(app_id=settings.QVAPAY_APP_ID, app_secret=settings.QVAPAY_APP_SECRET)
+        invoice = client.get_transaction(transaction_uuid)
 
         try:
             transaction = Transaction.objects.get(number=remote_id)
@@ -74,6 +75,22 @@ class ConfirmTransaction(graphene.Mutation):
             return ConfirmTransaction(status=False)
 
 
+class CancelTransaction(graphene.Mutation):
+    status = graphene.Boolean()
+
+    class Arguments:
+        token = graphene.String()
+        remote_id = graphene.String()
+
+    @staticmethod
+    def mutate(root, info, token, remote_id):
+        if token != settings.SECRET_TOKEN:
+            return GraphQLError('secret is incorrect!')
+
+        return CancelTransaction(status=True)
+
+
 class BillingMutations:
     create_invoice = CreateInvoice.Field()
     confirm_transaction = ConfirmTransaction.Field()
+    cancel_transaction = CancelTransaction.Field()
