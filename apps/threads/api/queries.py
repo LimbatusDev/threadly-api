@@ -12,4 +12,4 @@ class ThreadQueries:
 
     @login_required
     def resolve_queues(self, info, **kwargs):
-        return Thread.objects.filter(Q(author=info.context.user) & Q(pub_date__gt=timezone.now()))
+        return Thread.objects.filter(Q(author=info.context.user) & Q(pub_date__gt=timezone.now())).order_by('pub_date')
