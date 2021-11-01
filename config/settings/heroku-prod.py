@@ -2,7 +2,7 @@ import django_heroku
 
 from .base import *
 
-ALLOWED_HOSTS = ["threadly.xyz"]
+ALLOWED_HOSTS = ["threadly-api.herokuapp.com"]
 DEBUG = False
 
 # twitter secrets

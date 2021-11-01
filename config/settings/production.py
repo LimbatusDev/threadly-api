@@ -5,7 +5,7 @@ from .base import *
 # We load the env vars from a .env file
 load_dotenv()
 
-ALLOWED_HOSTS = ["threadly.xyz"]
+ALLOWED_HOSTS = ["api.threadly.xyz"]
 DEBUG = False
 
 SECRET_KEY = get_env_variable('SECRET_KEY')
@@ -93,7 +93,7 @@ LOGGING = {
 # security config
 SECURE_HSTS_SECONDS = 3600  # 1 hours. 31536000 seconds = 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_SSL_REDIRECT = True  # check this
+# SECURE_SSL_REDIRECT = True  # check this
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_REFERRER_POLICY = 'origin'
