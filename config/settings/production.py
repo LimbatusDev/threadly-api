@@ -10,6 +10,14 @@ DEBUG = False
 
 SECRET_KEY = get_env_variable('SECRET_KEY')
 
+# email configuration
+EMAIL_HOST = get_env_variable('EMAIL_HOST')
+EMAIL_PORT = get_env_variable('EMAIL_PORT')
+EMAIL_HOST_USER = get_env_variable('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = get_env_variable('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = get_env_variable('EMAIL_USE_TLS')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 # database configuration
 DATABASES = {
     'default': {
@@ -19,7 +27,8 @@ DATABASES = {
         'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
         'HOST': os.getenv("DB_HOST"),
         'PORT': os.getenv("DB_PORT"),
-        'CONN_MAX_AGE': 500
+        'CONN_MAX_AGE': 500,
+        'ATOMIC_REQUESTS': True,
     }
 }
 
