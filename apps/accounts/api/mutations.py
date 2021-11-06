@@ -1,3 +1,5 @@
+import logging
+
 import graphene
 import tweepy
 from django.conf import settings
@@ -7,6 +9,8 @@ from graphql_jwt.signals import token_issued
 from graphql_jwt.utils import jwt_payload, jwt_encode
 
 from apps.accounts.api.types import UserType
+
+logger = logging.getLogger(__name__)
 
 
 class TwitterLoginUrl(graphene.Mutation):
@@ -28,7 +32,7 @@ class TwitterLoginUrl(graphene.Mutation):
             redirect_url = auth.get_authorization_url()
             return TwitterLoginUrl(status=True, url=redirect_url, oauth_token=auth.request_token['oauth_token'])
         except tweepy.TweepyException as e:
-            print(e)
+            logger.error('Error fetching Twitter authorization url', e)
             return GraphQLError('Error fetching Twitter authorization url')
 
 
@@ -75,6 +79,12 @@ class TwitterAuth(graphene.Mutation):
                     'twitter_token_secret': auth.access_token_secret,
                 }
             )
+            if not created:
+                user.first_name = twitter_user.name
+                user.banner_url = profile_banner_url
+                user.image_url = profile_image_url
+                user.save()
+
             payload = jwt_payload(user)
             token = jwt_encode(payload)
 
@@ -85,7 +95,7 @@ class TwitterAuth(graphene.Mutation):
             )
             return TwitterAuth(status=True, token=token, user=user)
         except tweepy.TweepyException as e:
-            print(e)
+            logger.error('Failed to get access token.', e)
             return GraphQLError('Error! Failed to get access token.')
 
 
