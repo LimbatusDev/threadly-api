@@ -48,4 +48,3 @@ def schedule_thread(thread: Thread):
         args=json.dumps([thread.id]),
         one_off=True,  # If True, the schedule will only run the task a single time
     )
-    pass
