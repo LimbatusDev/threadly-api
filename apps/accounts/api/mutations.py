@@ -83,6 +83,8 @@ class TwitterAuth(graphene.Mutation):
                 user.first_name = twitter_user.name
                 user.banner_url = profile_banner_url
                 user.image_url = profile_image_url
+                user.twitter_token = auth.access_token
+                user.twitter_token_secret = auth.access_token_secret
                 user.save()
 
             payload = jwt_payload(user)
