@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone, timedelta
 
 import graphene
 import tweepy
@@ -85,7 +86,9 @@ class TwitterAuth(graphene.Mutation):
                 user.image_url = profile_image_url
                 user.twitter_token = auth.access_token
                 user.twitter_token_secret = auth.access_token_secret
-                user.save()
+                # give 4 days of free premium
+            user.due_premium_date = datetime(2022, 11, 18, tzinfo=timezone(offset=timedelta()))
+            user.save()
 
             payload = jwt_payload(user)
             token = jwt_encode(payload)
