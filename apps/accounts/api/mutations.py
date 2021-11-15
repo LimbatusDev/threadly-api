@@ -87,7 +87,8 @@ class TwitterAuth(graphene.Mutation):
                 user.twitter_token = auth.access_token
                 user.twitter_token_secret = auth.access_token_secret
                 # give 4 days of free premium
-            user.due_premium_date = datetime(2022, 11, 18, tzinfo=timezone(offset=timedelta()))
+            if not user.is_premium():
+                user.due_premium_date = datetime(2021, 11, 18, tzinfo=timezone(offset=timedelta()))
             user.save()
 
             payload = jwt_payload(user)
