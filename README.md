@@ -9,7 +9,9 @@ This project is under [GNU GPLv3](LICENSE)
 
 First install the dependencies
 
-    pip install -r requirements/development.txt
+    pip install .
+    # or
+    poetry install
 Then run the development server
 
     python manage.py runserver --settings=config.settings.development
