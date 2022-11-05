@@ -23,8 +23,20 @@ ENV DB_PASSWORD ${DB_PASSWORD}
 
 WORKDIR /code
 
-RUN pip install --upgrade pip
-COPY requirements/* /code/requirements/
-RUN pip install -r requirements/production.txt
+RUN pip3 install --upgrade pip
+# Install poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="/root/.local/bin:$PATH"
+
+COPY pyproject.toml poetry.lock /code/
+RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
+RUN pip install -r requirements.txt
+
 COPY . /code/
 RUN mkdir /code/logs
+
+RUN chmod +x manage.py
+RUN chmod +x entrypoint.sh
+CMD python3 ./manage.py migrate --no-input; \
+    python3 ./manage.py collectstatic --no-input; \
+    ./entrypoint.sh

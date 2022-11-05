@@ -3,6 +3,7 @@ version: "3"
 services:
   db:
     image: postgres:13.4
+    container_name: threadly_db
     volumes:
       - ./data/db:/var/lib/postgresql/data
     env_file:
@@ -10,25 +11,25 @@ services:
   web:
     container_name: threadly_api
     build: .
-    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --log-file /code/logs/gunicorn-error.log
     volumes:
-#      - .:/code
       - ./data/static:/code/static/
       - ./data/logs:/code/logs
     env_file:
       - .env
     ports:
-      - 8000:8000
+      - "8000:8000"
     depends_on:
       - db
     restart: always
   redis:
     image: redis:6.2.6
+    container_name: threadly_redis
     ports:
-      - 6379
+      - "6379"
   celery-task:
     build:
       context: .
+    container_name: threadly_task
     restart: always
     command: celery -A config worker -l INFO
     env_file:
@@ -40,6 +41,7 @@ services:
   celery-scheduler:
     build:
       context: .
+    container_name: threadly_scheduler
     restart: always
     command: celery -A config beat -l INFO -S django_celery_beat.schedulers:DatabaseScheduler
     env_file:
