@@ -5,7 +5,7 @@ from .base import *
 # We load the env vars from a .env file
 load_dotenv()
 
-ALLOWED_HOSTS = ["api.threadly.app", "api.threadly.xyz"]
+ALLOWED_HOSTS = ["threadly-api.ragnarok22.dev"]
 DEBUG = False
 
 SECRET_KEY = get_env_variable('SECRET_KEY')
