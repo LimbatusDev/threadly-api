@@ -3,7 +3,7 @@ An easy way to create thread and programming it
 
 ## License
 
-This project is not open source
+This project is under [GNU GPLv3](LICENSE)
 
 ## Running in development mode
 
